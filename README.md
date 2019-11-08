@@ -13,9 +13,6 @@ Oh no! My data! - Linux/BSD hash table corrupted file rebuilder
  - onmd-test
    - Clean up code
    - Multi-threading
-   - Fix variable names
-   - Add help page
-   - Add hash addresses on block errors
    - Check for over-reading
  - onmd-rebuild
    - Write code
@@ -34,3 +31,13 @@ Oh no! My data! - Linux/BSD hash table corrupted file rebuilder
 | 8            | unsigned long      | Number of blocks |
 | 4            | unsigned int       | Last block size  |
 | 8            | unsigned long      | File length      |
+
+## Recovery file structure
+| Size (bytes)      | Type           | Name              |
+|-------------------|----------------|-------------------|
+| 4                 | unsigned int   |  Block #          |
+| MD5_DIGEST_LENGTH | unsigned char* | Hash              |
+| ...               | ...            | ...               |
+| 4                 | unsigned int   | Blocksize         |
+| 4                 | unsigned int   | Last block length |
+| 8                 | unsigned long  | Last block #      |
