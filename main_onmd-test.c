@@ -222,6 +222,7 @@ int main(int argc, char *argv[]){
 
 	fclose(hashFilePointer);
 	fclose(binaryFilePointer);
+	fclose(outputFilePointer);
 
 	if(verbose) printf("Finished!\n");
 	return 0;
