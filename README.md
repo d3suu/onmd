@@ -16,10 +16,14 @@ Oh no! My data! - Linux/BSD hash table corrupted file rebuilder
    - Check for over-reading
  - onmd-rebuild
    - Write code
+ - Code overall
+   - Make real structures
+   - ... and file loaders and stuff
  - Misc.
    - Automate tests
    - Better Makefile
    - Port/Compile code on FreeBSD
+   - Return codes in readme
  - Longterm
    - Speed up, using many computers on network (server master + client slaves)
 
