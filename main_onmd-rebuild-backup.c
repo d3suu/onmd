@@ -122,7 +122,7 @@ int main(int argc, char *argv[]){
 	
 	unsigned char digest[MD5_DIGEST_LENGTH];
 	unsigned char digestPrecalculated[MD5_DIGEST_LENGTH];
-	unsigned char block[blocksize+1];
+	unsigned char block[blocksize];
 	//size_t block_byte_read;
 	//int block_check_n = 0;
 	//int bad_blocks = 0;
@@ -147,42 +147,40 @@ int main(int argc, char *argv[]){
 		signal(SIGINT, signalHandler);
 	}
 
-	// TODO
-	//  - Make a switch for two methods: this one, and one from main_onmd-rebuild-backup.c
-	//  - Name these methods
-	//  - Add multithreading
-	//  - Finally rebuild the code, so its not a huge mess
-
 	// Rebuild from hashes
-	// build block, fill with zeros
-	memset(block, 0x00, blocksize);
-	// calculate
-	while(1){
-		// Check MD5
-		MD5(block, blocksize, digest);
-		for(long i = 0; i < blocks_to_rebuild; i++){
-			if(memcmp(digest, hashArray[i], MD5_DIGEST_LENGTH) == 0){
-				if(verbose) printf("Found block with hash!\n");
-				
-				// Write fixed block
-				fseek(binaryFilePointer, blocksize*blockNumberArray[i], SEEK_SET);
-				fwrite(block, 1, blocksize, binaryFilePointer);
-				if(debug) printf("DEBUG: block: %c\n", block[0]);
-				if(debug) printf("DEBUG: Block: %lu, Address start: %lu\n", (unsigned long)blockNumberArray[i], (unsigned long)blocksize*blockNumberArray[i]);
+	for(long i = 0; i < blocks_to_rebuild; i++){ // TODO Optimize
+	//while(1){
+		// build block, fill with zeros
+		memset(block, 0x00, blocksize);
+		// calculate
+		while(1){
+			// Check MD5
+			MD5(block, blocksize, digest);
+			//for(long i = 0; i < blocks_to_rebuild; i++){
+			if(memcmp(digest, hashArray[i], MD5_DIGEST_LENGTH) == 0)
+				break;
+			//}
+			// Calculate
+			block[0]++;
+			for(int j=0; j<blocksize-1; j++){
+				if(block[j]==0xFF){
+					block[j+1]++;
+					block[j]=0x00;
+				}
 			}
+			//if(debug) printf("%d%\r", (block[blocksize-1]/0xFF)*100);
 		}
-		// Calculate
-		block[0]++;
-		for(int j=0; j<blocksize; j++){
-			if(block[j]==0xFF){
-				block[j+1]++;
-				block[j]=0x00;
-			}
-		}
-		if(block[blocksize] == 0x01){
-			break;
-		}
+		if(verbose) printf("Found block with hash!\n");
+		
+		// Write fixed block
+		fseek(binaryFilePointer, blocksize*blockNumberArray[i], SEEK_SET);
+		fwrite(block, 1, blocksize, binaryFilePointer);
+		if(debug) printf("DEBUG: block: %c\n", block[0]);
+		if(debug) printf("DEBUG: Block: %lu, Address start: %lu\n", (unsigned long)blockNumberArray[i], (unsigned long)blocksize*blockNumberArray[i]);
 	}
+
+	
+	//fwrite(&last_block_n, 1, sizeof(unsigned long), outputFilePointer);
 
 	fclose(hashFilePointer);
 	fclose(binaryFilePointer);

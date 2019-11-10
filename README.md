@@ -3,6 +3,9 @@ Oh no! My data! - Linux/BSD hash table corrupted file rebuilder
 
 > Warning! Early development!
 
+## Rebuild demo
+[https://www.youtube.com/watch?v=lfNckW6V3F0](https://www.youtube.com/watch?v=lfNckW6V3F0)
+
 ## Requirements
  - libssl-dev
 
